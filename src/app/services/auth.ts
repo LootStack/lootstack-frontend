@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { Usuario } from '../models/usuario.models';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ import { Usuario } from '../models/usuario.models';
 export class Auth {
   private apiUrl:string = 'https://lootstack-api.onrender.com/api';
   private tokenKey:string = 'lootstack_token';
+
+  private platformId = inject(PLATFORM_ID);
 
   constructor(private http:HttpClient, private router: Router){}
 
@@ -21,11 +24,17 @@ export class Auth {
   }
 
   public saveToken(token: string):void {
-    localStorage.setItem(this.tokenKey, token);
+    if(isPlatformBrowser(this.platformId)){
+      localStorage.setItem(this.tokenKey, token);
+    }
   }
 
   public getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    if(isPlatformBrowser(this.platformId)){
+      return localStorage.getItem(this.tokenKey);
+    }
+
+    return null;
   }
 
   public getDecoddedToken(): Usuario | null {
@@ -50,7 +59,9 @@ export class Auth {
   }
 
   public logout():void {
-    localStorage.removeItem(this.tokenKey);
+    if(isPlatformBrowser(this.platformId)){
+      localStorage.removeItem(this.tokenKey);
+    }
     this.router.navigate(['/login']);
   }
 }
