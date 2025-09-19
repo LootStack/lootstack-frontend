@@ -1,0 +1,31 @@
+.cadastro-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+
+  mat-card {
+    max-width: 500px;
+    width: 100%;
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      mat-form-field {
+        width: 100%;
+      }
+
+      .error-message {
+        color: #f44336;
+        text-align: center;
+        margin-top: 1rem;
+      }
+    }
+  
+  }
+
+  .return-button {
+    border: 1px solid black;
+  }
+}

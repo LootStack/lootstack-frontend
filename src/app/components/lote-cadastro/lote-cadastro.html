@@ -1,0 +1,49 @@
+<div class="cadastro-container">
+  <div class="return-button">
+    <button mat-icon-button (click)="returnPageConsulta()">
+      <mat-icon>keyboard_backspace</mat-icon>
+    </button>
+  </div>
+  <mat-card>
+    <mat-card-title>Cadastrar Novo Lote de Porcas</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="loteForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Código do Lote</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="codigo_lote"
+            placeholder="Ex: 601"
+            required [(ngModel)]="codigoLoteForm"
+          />
+          @if (loteForm.get('codigo_lote')?.hasError('required')) {
+          <mat-error>O código do lote é obrigatório.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Data de Criação</mat-label>
+          <input matInput type="date" formControlName="data_criacao" required />
+        </mat-form-field>
+
+        @if(errorMessage) {
+        <p class="error-message">{{ errorMessage }}</p>
+        }
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="loteForm.invalid || isLoading"
+        >
+          @if(isLoading) {
+          <mat-spinner diameter="24"></mat-spinner>
+          } @else {
+          <span>Salvar Lote</span>
+          }
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
