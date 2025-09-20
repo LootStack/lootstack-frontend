@@ -3,7 +3,7 @@ import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
-import { Usuario } from '../models/usuario.models';
+import { TokenPayload } from '../models/usuario.models';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -37,7 +37,7 @@ export class Auth {
     return null;
   }
 
-  public getDecoddedToken(): Usuario | null {
+  public getDecoddedToken(): TokenPayload | null {
     const token = this.getToken();
     if(token) {
       try {
@@ -49,8 +49,16 @@ export class Auth {
     return null;
   }
 
+  public isTokenExpired():boolean {
+    const decoded = this.getDecoddedToken();
+    if(!decoded) return true;
+    if(!decoded.exp) return true;
+    const now = Math.floor(Date.now() / 1000);
+    return decoded.exp < now;
+  }
+
   public isLoggedIn(): boolean {
-    return !!this.getToken();
+    return !!this.getToken() && !this.isTokenExpired();
   }
 
   public isAdmin(): boolean {

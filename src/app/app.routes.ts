@@ -8,6 +8,7 @@ import { FichaConsulta } from './components/ficha-consulta/ficha-consulta';
 import { LoteCadastro } from './components/lote-cadastro/lote-cadastro';
 import { FichaCadastro } from './components/ficha-cadastro/ficha-cadastro';
 import { adminGuard } from './guards/admin-guard';
+import { FichaConsultaTotal } from './components/ficha-consulta-total/ficha-consulta-total';
 
 export const routes: Routes = [
     {
@@ -40,6 +41,10 @@ export const routes: Routes = [
                 path: 'admin/fichas/nova',
                 component: FichaCadastro,
                 canActivate: [adminGuard]
+            },
+            {
+                path: 'fichas/total',
+                component: FichaConsultaTotal
             },
             {
                 path: '',

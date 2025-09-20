@@ -56,4 +56,15 @@ export class Lote {
       })
     );
   }
+
+  public deleteLote(id:number): Observable<void> {
+    const endpoint = `${this.apiUrl}/${id}`;
+    return this.http.delete<void>(endpoint).pipe(
+      catchError(error => {
+        console.error('Erro ao deletar lote:', error);
+        const msg = error?.error?.message ?? "Não foi possível deletar o lote";
+        return throwError(() => new Error(msg));
+      })
+    );
+  }
 }

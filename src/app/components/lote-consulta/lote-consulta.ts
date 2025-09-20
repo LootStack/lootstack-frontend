@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-lote-consulta',
@@ -23,6 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatTableModule,
     MatFormFieldModule,
     MatInputModule,
+    MatCardModule,
     MatIconModule,
     MatProgressSpinnerModule,
     MatButtonModule,
@@ -43,6 +45,14 @@ export class LoteConsulta implements OnInit {
   constructor(private loteService: Lote, public authService:Auth){}
 
   ngOnInit(): void {
+
+    if(this.authService.isAdmin()){
+      this.colunasExibidas = ['codigo_lote', 'data_criacao', 'acoes'];
+    } else {
+      this.colunasExibidas = ['codigo_lote', 'data_criacao'];
+    }
+
+
     this.searchControl.valueChanges.pipe(
       startWith(''),
       debounceTime(300),
@@ -61,6 +71,32 @@ export class LoteConsulta implements OnInit {
         this.error = err.message;
         this.isLoading = false;
         this.lotes = [];
+      }
+    });
+  }
+
+  public onDeleteLote(lote:any):void {
+    const idToDelete = lote.id_lote ?? lote.id ?? lote._id;
+
+    if(!idToDelete){
+      window.alert('Não foi possível identificar o ID do lote para remoção');
+      return;
+    }
+
+    const confirmar = window.confirm(
+      `Deseja remover o lote ${lote.codigo_lote ?? idToDelete}? Esta ação é irreversível!`
+    );
+    if(!confirmar) return;
+
+    this.loteService.deleteLote(idToDelete).subscribe({
+      next: () => {
+        this.lotes = this.lotes.filter(l => l.id_lote !== idToDelete);
+        window.alert('Lote removido com sucesso');
+      },
+      error: err => {
+        console.error('Erro ao remover lote:', err);
+        const backendMsg = err?.error?.message ?? err?.message ?? 'erro desconhecido';
+        window.alert('Falha ao remover lote: ' + backendMsg);
       }
     });
   }

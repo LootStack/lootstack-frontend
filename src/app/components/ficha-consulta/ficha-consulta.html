@@ -1,1 +1,123 @@
-<p>ficha-consulta works!</p>
+<div class="consulta-container">
+  <div class="header-container">
+    <h2>Painel de Fichas de Porcas</h2>
+    <a
+      mat-raised-button
+      color="primary"
+      routerLink="/dashboard/fichas/total"
+    >
+      <mat-icon>manage_search</mat-icon>
+      Buscar Todas Fichas
+    </a>
+    @if (authService.isAdmin()) {
+    <a
+      mat-raised-button
+      color="primary"
+      routerLink="/dashboard/admin/fichas/nova"
+    >
+      <mat-icon>add_card</mat-icon>
+      Cadastrar Nova Ficha
+    </a>
+    }
+  </div>
+
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Buscar por ID do Brinco</mat-label>
+    <input
+      matInput
+      [formControl]="searchControl"
+      placeholder="Digite o ID do brinco..."
+    />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <div class="results-container">
+    @if(isLoading) {
+    <div class="spinner-container">
+      <mat-spinner></mat-spinner>
+    </div>
+    } @if(errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    } @if(fichaSelecionada && !isLoading) {
+    <mat-card class="details-card">
+      <mat-card-header class="details-header">
+        <mat-card-title
+          >Detalhes da Ficha: {{ fichaSelecionada.id_porca }}</mat-card-title
+        >
+        @if(authService.isAdmin()){
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="excluirFicha(fichaSelecionada.id_porca)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+        }
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Tipo:</strong> {{ fichaSelecionada.tipo_porca }}</p>
+        <p>
+          <strong>Data de Nascimento:</strong>
+          {{ fichaSelecionada.data_nascimento | date : "dd/MM/yyyy" }}
+        </p>
+        <p><strong>Lote:</strong> {{ fichaSelecionada.lote.codigo_lote }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <h3>Histórico de Vacinação</h3>
+    @if(historico.length > 0) {
+    <table mat-table [dataSource]="historico" class="mat-elevation-z8">
+      <ng-container matColumnDef="data_aplicacao">
+        <th mat-header-cell *matHeaderCellDef>Data</th>
+        <td mat-cell *matCellDef="let aplicacao">
+          {{ aplicacao.data_aplicacao | date : "dd/MM/yyyy" }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="nome_vacina">
+        <th mat-header-cell *matHeaderCellDef>Vacina</th>
+        <td mat-cell *matCellDef="let aplicacao">
+          {{ aplicacao.nome_vacina }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="dose_aplicada_ml">
+        <th mat-header-cell *matHeaderCellDef>Dose (ml)</th>
+        <td mat-cell *matCellDef="let aplicacao">
+          {{ aplicacao.dose_aplicada_ml }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="nome_aplicador">
+        <th mat-header-cell *matHeaderCellDef>Aplicador</th>
+        <td mat-cell *matCellDef="let aplicacao">
+          {{ aplicacao.nome_aplicador }}
+        </td>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="[
+          'data_aplicacao',
+          'nome_vacina',
+          'dose_aplicada_ml',
+          'nome_aplicador'
+        ]"
+      ></tr>
+      <tr
+        mat-row
+        *matRowDef="
+          let row;
+          columns: [
+            'data_aplicacao',
+            'nome_vacina',
+            'dose_aplicada_ml',
+            'nome_aplicador'
+          ]
+        "
+      ></tr>
+    </table>
+    } @else {
+    <p class="empty-message">
+      Nenhum registro de vacinação encontrado para este animal.
+    </p>
+    } }
+  </div>
+</div>

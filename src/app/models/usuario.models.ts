@@ -3,3 +3,8 @@ export interface Usuario {
     nome:string;
     perfil: 'ADMINISTRADOR' | 'FUNCIONARIO';
 }
+
+export interface TokenPayload extends Usuario {
+  iat?: number;
+  exp?: number;
+}
