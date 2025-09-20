@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { FichaListModel, FichaModel } from '../models/ficha.models';
 import { AplicacaoModel } from '../models/aplicacao.models';
 
@@ -21,10 +21,30 @@ export class Ficha {
     );
   }
 
+  private transformFichaData<T extends { data_nascimento: string }>(ficha: T): T {
+    if (!ficha.data_nascimento) {
+      return ficha;
+    }
+
+    const date = new Date(ficha.data_nascimento);
+
+    if (isNaN(date.getTime())) {
+      return ficha;
+    }
+
+    const dataCorrigida = date.toISOString().slice(0, 10);
+    
+    return {
+      ...ficha,
+      data_nascimento: dataCorrigida
+    };
+  }
+
   public getFichas(searchTerm: string): Observable<FichaListModel[]> {
     return this.http.get<FichaListModel[]>(`${this.apiUrl}/fichas-porcas?search=${searchTerm}`).pipe(
+      map(fichas => fichas.map(ficha => this.transformFichaData(ficha))),
       catchError(error => {
-        console.error('Erro ao obter as ficha:', error);
+        console.error('Erro ao obter as fichas:', error);
         return throwError(() => new Error("Não foi possível obter as fichas"));
       })
     );
@@ -32,6 +52,7 @@ export class Ficha {
 
   public getFichaById(id:string): Observable<FichaModel>{
     return this.http.get<FichaModel>(`${this.apiUrl}/fichas-porcas/${id}`).pipe(
+      map(ficha => this.transformFichaData(ficha)),
       catchError(error => {
         console.error('Erro ao obter a ficha pelo id:', error);
         return throwError(() => new Error("Não foi possível obter a ficha pelo id fornecido"));

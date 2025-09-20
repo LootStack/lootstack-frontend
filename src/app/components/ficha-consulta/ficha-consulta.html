@@ -1,24 +1,26 @@
 <div class="consulta-container">
   <div class="header-container">
     <h2>Painel de Fichas de Porcas</h2>
-    <a
-      mat-raised-button
-      color="primary"
-      routerLink="/dashboard/fichas/total"
-    >
-      <mat-icon>manage_search</mat-icon>
-      Buscar Todas Fichas
-    </a>
-    @if (authService.isAdmin()) {
-    <a
-      mat-raised-button
-      color="primary"
-      routerLink="/dashboard/admin/fichas/nova"
-    >
-      <mat-icon>add_card</mat-icon>
-      Cadastrar Nova Ficha
-    </a>
-    }
+    <div class="actions">
+      <a
+        mat-raised-button
+        color="primary"
+        routerLink="/dashboard/fichas/total"
+      >
+        <mat-icon>manage_search</mat-icon>
+        Buscar Todas Fichas
+      </a>
+      @if (authService.isAdmin()) {
+      <a
+        mat-raised-button
+        color="primary"
+        routerLink="/dashboard/admin/fichas/nova"
+      >
+        <mat-icon>add_card</mat-icon>
+        Cadastrar Nova Ficha
+      </a>
+      }
+    </div>
   </div>
 
   <mat-form-field appearance="outline" class="search-field">
