@@ -6,6 +6,14 @@
   mat-card {
     max-width: 500px;
     width: 100%;
+    padding: 10px;
+
+    mat-card-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
 
     form {
       display: flex;
@@ -26,6 +34,6 @@
   }
 
   .return-button {
-    border: 1px solid black;
+    margin-right: 20px;
   }
 }
