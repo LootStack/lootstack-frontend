@@ -14,6 +14,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { Ficha } from '../../services/ficha';
 import { LoteModel } from '../../models/lote.models';
 import { Lote } from '../../services/lote';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Confirmacao } from '../../dialogs/confirmacao/confirmacao';
 
 @Component({
   selector: 'app-ficha-cadastro',
@@ -22,7 +24,7 @@ import { Lote } from '../../services/lote';
     CommonModule, ReactiveFormsModule, RouterModule,
     MatCardModule, MatButtonModule, MatInputModule, MatFormFieldModule,
     MatProgressSpinnerModule, MatIconModule, MatSelectModule,
-    MatDatepickerModule, MatNativeDateModule
+    MatDatepickerModule, MatNativeDateModule, MatDialogModule, Confirmacao
   ],
   templateUrl: './ficha-cadastro.html',
   styleUrl: './ficha-cadastro.scss'
@@ -39,7 +41,8 @@ export class FichaCadastro implements OnInit {
     private fb: FormBuilder,
     private fichaService: Ficha,
     private router: Router,
-    private loteService: Lote
+    private loteService: Lote,
+    private dialog: MatDialog
   ) {
     this.fichaForm = this.fb.group({
       id_porca: ['', [Validators.required, Validators.minLength(3)]],
@@ -85,8 +88,16 @@ export class FichaCadastro implements OnInit {
     this.fichaService.createFicha(dadosParaApi).subscribe({
       next: (fichaCriada) => {
         this.isLoading = false;
-        alert(`Ficha para a porca "${fichaCriada.id_porca}" criada com sucesso!`);
-        this.fichaForm.reset();
+        const dialogRef = this.dialog.open(Confirmacao, {
+          data: {
+            titulo: 'Sucesso!',
+            mensagem: `Ficha para a porca "${fichaCriada.id_porca}" criada com sucesso!`
+          }
+        });
+
+        dialogRef.afterClosed().subscribe(() => {
+          this.fichaForm.reset();
+        });
       },
       error: (err) => {
         this.isLoading = false;

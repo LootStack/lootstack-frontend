@@ -11,6 +11,15 @@
         margin-bottom: 10px;
     }
 
+    .filtros-container {
+        display: flex;
+        gap: 16px;
+
+        .filtro-item {
+            flex: 1;
+        }
+    }
+
     .spinner-container {
         display: flex;
         justify-content: center;

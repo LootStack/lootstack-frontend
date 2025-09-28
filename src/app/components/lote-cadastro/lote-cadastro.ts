@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Lote } from '../../services/lote';
 import { Router } from '@angular/router';
 
@@ -10,6 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Confirmacao } from '../../dialogs/confirmacao/confirmacao';
 
 @Component({
   selector: 'app-lote-cadastro',
@@ -23,8 +25,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatProgressSpinnerModule,
     MatIconModule,
-    FormsModule
-],
+    MatDialogModule,
+    Confirmacao
+  ],
   templateUrl: './lote-cadastro.html',
   styleUrl: './lote-cadastro.scss'
 })
@@ -34,15 +37,23 @@ export class LoteCadastro {
   public isLoading: boolean = false;
   public errorMessage: string | null = null;
 
-  constructor(private loteService:Lote, private router:Router, private fb:FormBuilder){
+  constructor(private loteService: Lote, private router: Router, private fb: FormBuilder, private dialog: MatDialog) {
+    const hoje = new Date();
+
+    const ano = hoje.getFullYear();
+    const mes = (hoje.getMonth() + 1).toString().padStart(2, '0');
+    const dia = hoje.getDate().toString().padStart(2, '0');
+
+    const dataHoje = `${ano}-${mes}-${dia}`;
+
     this.loteForm = this.fb.group({
       codigo_lote: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
-      data_criacao: [new Date().toISOString().split('T')[0], Validators.required]
+      data_criacao: [dataHoje, Validators.required]
     });
   }
 
-  public onSubmit():void {
-    if(this.loteForm.invalid) {
+  public onSubmit(): void {
+    if (this.loteForm.invalid) {
       return;
     }
     this.isLoading = true;
@@ -58,8 +69,24 @@ export class LoteCadastro {
     this.loteService.createLote(dadosParaApi).subscribe({
       next: loteCriado => {
         this.isLoading = false;
-        alert(`Lote "${loteCriado.codigo_lote}" criado com sucesso!`);
-        this.codigoLoteForm = 0;
+        const dialogRef = this.dialog.open(Confirmacao, {
+          data: {
+            titulo: 'Sucesso!',
+            mensagem: `Lote "${loteCriado.codigo_lote}" criado com sucesso!`
+          }
+        });
+
+        dialogRef.afterClosed().subscribe(() => {
+          this.loteForm.reset();
+
+          const hoje = new Date();
+          const ano = hoje.getFullYear();
+          const mes = (hoje.getMonth() + 1).toString().padStart(2, '0');
+          const dia = hoje.getDate().toString().padStart(2, '0');
+          const dataHoje = `${ano}-${mes}-${dia}`;
+
+          this.loteForm.patchValue({ data_criacao: dataHoje });
+        });
       },
       error: err => {
         this.isLoading = false;
@@ -69,7 +96,7 @@ export class LoteCadastro {
     })
   }
 
-  public returnPageConsulta():void {
+  public returnPageConsulta(): void {
     this.router.navigate(['/dashboard/lotes']);
   }
 }

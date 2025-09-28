@@ -7,13 +7,14 @@ import { LoteModel } from '../../models/lote.models';
 import { Auth } from '../../services/auth';
 import { RouterModule } from '@angular/router';
 
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Confirmacao } from '../../dialogs/confirmacao/confirmacao';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-lote-consulta',
@@ -24,11 +25,12 @@ import { MatCardModule } from '@angular/material/card';
     MatTableModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCardModule,
     MatIconModule,
     MatProgressSpinnerModule,
     MatButtonModule,
-    RouterModule
+    RouterModule,
+    MatDialogModule,
+    Confirmacao
   ],
   templateUrl: './lote-consulta.html',
   styleUrl: './lote-consulta.scss'
@@ -42,7 +44,7 @@ export class LoteConsulta implements OnInit {
   public isLoading:boolean = true;
   public error:string | null = null;
 
-  constructor(private loteService: Lote, public authService:Auth){}
+  constructor(private loteService: Lote, public authService:Auth, private dialog: MatDialog){}
 
   ngOnInit(): void {
 
@@ -79,24 +81,47 @@ export class LoteConsulta implements OnInit {
     const idToDelete = lote.id_lote ?? lote.id ?? lote._id;
 
     if(!idToDelete){
-      window.alert('Não foi possível identificar o ID do lote para remoção');
+      this.dialog.open(Confirmacao, {
+        data: {
+          titulo: 'Erro',
+          mensagem: 'Não foi possível identificar o ID do lote para remoção'
+        },
+      });
       return;
     }
 
-    const confirmar = window.confirm(
-      `Deseja remover o lote ${lote.codigo_lote ?? idToDelete}? Esta ação é irreversível!`
-    );
-    if(!confirmar) return;
-
-    this.loteService.deleteLote(idToDelete).subscribe({
-      next: () => {
-        this.lotes = this.lotes.filter(l => l.id_lote !== idToDelete);
-        window.alert('Lote removido com sucesso');
+    const dialogRef = this.dialog.open(Confirmacao, {
+      data: {
+        titulo: 'Confirmar Exclusão',
+        mensagem: `Deseja remover o lote ${lote.codigo_lote ?? idToDelete}? Esta ação é irreversível!`,
+        mostrarBotaoCancelar: true
       },
-      error: err => {
-        console.error('Erro ao remover lote:', err);
-        const backendMsg = err?.error?.message ?? err?.message ?? 'erro desconhecido';
-        window.alert('Falha ao remover lote: ' + backendMsg);
+      width: '350px',
+    });
+
+    dialogRef.afterClosed().subscribe(resultado => {
+      if(resultado) {
+        this.loteService.deleteLote(idToDelete).subscribe({
+          next: () => {
+            this.lotes = this.lotes.filter(l => l.id_lote !== idToDelete);
+            this.dialog.open(Confirmacao, {
+              data: {
+                titulo: 'Sucesso!',
+                mensagem: 'Lote removido com sucesso'
+              },
+            });
+          },
+          error: err => {
+            console.error('Erro ao remover lote:', err);
+            const backendMsg = err?.error?.message ?? err?.message ?? 'erro desconhecido';
+            this.dialog.open(Confirmacao, {
+              data: {
+                titulo: 'Falha na Remoção',
+                mensagem: 'Falha ao remover lote: ' + backendMsg
+              },
+            });
+          }
+        });
       }
     });
   }

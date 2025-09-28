@@ -9,6 +9,8 @@ import { Auth } from '../../services/auth';
 import { RouterModule } from '@angular/router';
 
 
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Confirmacao } from '../../dialogs/confirmacao/confirmacao'; 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,7 +32,9 @@ import { MatButtonModule } from '@angular/material/button';
     MatCardModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogModule,
+    Confirmacao
   ],
   templateUrl: './ficha-consulta.html',
   styleUrl: './ficha-consulta.scss'
@@ -42,7 +46,7 @@ export class FichaConsulta implements OnInit {
   public isLoading: boolean = false;
   public errorMessage: string | null = null;
 
-  constructor(private fichaService: Ficha, public authService: Auth) { }
+  constructor(private fichaService: Ficha, public authService: Auth, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.searchControl.valueChanges.pipe(
@@ -85,25 +89,48 @@ export class FichaConsulta implements OnInit {
   public excluirFicha(idPorca?: string): void {
     const idToDelete = idPorca ?? this.fichaSelecionada?.id_porca;
     if (!idToDelete) {
-      window.alert('Não foi possível identificar o ID da ficha para remoção.');
+      this.dialog.open(Confirmacao, {
+        data: {
+          titulo: 'Erro',
+          mensagem: 'Não foi possível identificar o ID da ficha para remoção'
+        },
+      });
       return;
     }
 
-    const confirmar = window.confirm(
-      `Deseja remover a ficha da porca ${idToDelete}? Esta ação é irreversível!`
-    );
-    if (!confirmar) return;
-
-    this.fichaService.deleteFicha(idToDelete).subscribe({
-      next: () => {
-        this.fichaSelecionada = null;
-        this.historico = [];
-        window.alert('Ficha removida com sucesso');
+    const dialogRef = this.dialog.open(Confirmacao, {
+      data: {
+        titulo: 'Confirmar Exclusão',
+        mensagem: `Deseja remover a ficha da porca ${idToDelete}? Esta ação é irreversível!`,
+        mostrarBotaoCancelar: true
       },
-      error: err => {
-        console.error('Erro ao remover ficha:', err);
-        const backendMsg = err?.error?.message ?? err?.message ?? 'erro desconhecido';
-        window.alert('Falha ao remover ficha: ' + backendMsg);
+      width: '350px',
+    });
+
+    dialogRef.afterClosed().subscribe(resultado => {
+      if(resultado) {
+        this.fichaService.deleteFicha(idToDelete).subscribe({
+          next: () => {
+            this.fichaSelecionada = null;
+            this.historico = [];
+            this.dialog.open(Confirmacao, {
+              data: {
+                titulo: 'Sucesso!',
+                mensagem: 'Ficha removida com sucesso'
+              },
+            });
+          },
+          error: err => {
+            console.error('Erro ao remover ficha:', err);
+            const backendMsg = err?.error?.message ?? err?.message ?? 'erro desconhecido';
+            this.dialog.open(Confirmacao, {
+              data: {
+                titulo: 'Falha na Remoção',
+                mensagem: 'Falha ao remover ficha: ' + backendMsg
+              },
+            });
+          }
+        });
       }
     });
   }

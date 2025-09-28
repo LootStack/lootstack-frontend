@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>{{ data.titulo }}</h1>
+<div mat-dialog-content>
+  <p>{{ data.mensagem }}</p>
+</div>
+<div mat-dialog-actions align="end">
+  @if (data.mostrarBotaoCancelar) {
+    <button mat-button (click)="onCancelarClick()">Não</button>
+  }
+  <button mat-flat-button color="primary" (click)="onConfirmarClick()" cdkFocusInitial>
+    {{ data.mostrarBotaoCancelar ? 'Sim' : 'OK' }}
+  </button>
+</div>

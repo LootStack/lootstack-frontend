@@ -18,7 +18,6 @@
             formControlName="codigo_lote"
             placeholder="Ex: 601"
             required
-            [(ngModel)]="codigoLoteForm"
           />
           @if (loteForm.get('codigo_lote')?.hasError('required')) {
           <mat-error>O código do lote é obrigatório.</mat-error>

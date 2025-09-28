@@ -1,21 +1,34 @@
 <div class="consulta-container">
   <div class="header-container">
-    <h2>Painel de Fichas de Porcas</h2>
+    <h2>Painel de Todas as Fichas</h2>
     <a mat-raised-button color="primary" routerLink="/dashboard/fichas">
       <mat-icon>arrow_back</mat-icon>
       Voltar
     </a>
   </div>
 
-  <mat-form-field appearance="outline" class="search-field">
-    <mat-label>Buscar por ID do Brinco</mat-label>
-    <input
-      matInput
-      [formControl]="searchControl"
-      placeholder="Digite para filtrar..."
-    />
-    <mat-icon matSuffix>search</mat-icon>
-  </mat-form-field>
+  <div class="filtros-container">
+    <mat-form-field appearance="outline" class="filtro-item">
+      <mat-label>Buscar por ID do Brinco</mat-label>
+      <input
+        matInput
+        [formControl]="searchControl"
+        placeholder="Digite para filtrar..."
+      />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filtro-item">
+      <mat-label>Filtrar por Lote</mat-label>
+      <mat-select [formControl]="loteControl">
+        <mat-option [value]="''">Todos os Lotes</mat-option>
+
+        @for (lote of listaLotes; track lote.id_lote) {
+        <mat-option [value]="lote.id_lote">{{ lote.codigo_lote }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
 
   <div class="results-container">
     @if (isLoading) {
@@ -30,19 +43,16 @@
         <th mat-header-cell *matHeaderCellDef>ID Brinco</th>
         <td mat-cell *matCellDef="let ficha">{{ ficha.id_porca }}</td>
       </ng-container>
-
       <ng-container matColumnDef="data_nascimento">
         <th mat-header-cell *matHeaderCellDef>Data de Nascimento</th>
         <td mat-cell *matCellDef="let ficha">
           {{ ficha.data_nascimento | date : "dd/MM/yyyy" }}
         </td>
       </ng-container>
-
       <ng-container matColumnDef="codigo_lote">
         <th mat-header-cell *matHeaderCellDef>Código do Lote</th>
         <td mat-cell *matCellDef="let ficha">{{ ficha.codigo_lote }}</td>
       </ng-container>
-
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>

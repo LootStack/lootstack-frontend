@@ -10,9 +10,9 @@ import { AplicacaoModel } from '../models/aplicacao.models';
 export class Ficha {
   private apiUrl = 'https://lootstack-api.onrender.com/api';
 
-  constructor(private http:HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  public createFicha(novaFicha: {id_porca: string; data_nascimento: string; tipo_porca: string; id_lote:number}): Observable<FichaModel>{
+  public createFicha(novaFicha: { id_porca: string; data_nascimento: string; tipo_porca: string; id_lote: number }): Observable<FichaModel> {
     return this.http.post<FichaModel>(`${this.apiUrl}/fichas-porcas`, novaFicha).pipe(
       catchError(error => {
         console.error('Erro ao criar ficha:', error);
@@ -33,15 +33,28 @@ export class Ficha {
     }
 
     const dataCorrigida = date.toISOString().slice(0, 10);
-    
+
     return {
       ...ficha,
       data_nascimento: dataCorrigida
     };
   }
 
-  public getFichas(searchTerm: string): Observable<FichaListModel[]> {
-    return this.http.get<FichaListModel[]>(`${this.apiUrl}/fichas-porcas?search=${searchTerm}`).pipe(
+  public getFichas(searchTerm: string, loteId: string): Observable<FichaListModel[]> {
+    const params = new URLSearchParams();
+
+    if (searchTerm) {
+      params.append('search', searchTerm);
+    }
+
+    if (loteId) {
+      params.append('lote', loteId);
+    }
+
+    const queryString = params.toString();
+    const requestUrl = `${this.apiUrl}/fichas-porcas${queryString ? '?' + queryString : ''}`;
+
+    return this.http.get<FichaListModel[]>(requestUrl).pipe(
       map(fichas => fichas.map(ficha => this.transformFichaData(ficha))),
       catchError(error => {
         console.error('Erro ao obter as fichas:', error);
@@ -50,7 +63,7 @@ export class Ficha {
     );
   }
 
-  public getFichaById(id:string): Observable<FichaModel>{
+  public getFichaById(id: string): Observable<FichaModel> {
     return this.http.get<FichaModel>(`${this.apiUrl}/fichas-porcas/${id}`).pipe(
       map(ficha => this.transformFichaData(ficha)),
       catchError(error => {
@@ -60,7 +73,7 @@ export class Ficha {
     );
   }
 
-  public getHistoricoVacinacao(id:string): Observable<AplicacaoModel[]>{
+  public getHistoricoVacinacao(id: string): Observable<AplicacaoModel[]> {
     return this.http.get<AplicacaoModel[]>(`${this.apiUrl}/aplicacoes-vacinas?id_porca=${id}`).pipe(
       catchError(error => {
         console.error('Erro ao obter o histórico de vacinação:', error);
@@ -70,7 +83,7 @@ export class Ficha {
   }
 
 
-  public deleteFicha(id:string): Observable<void> {
+  public deleteFicha(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/fichas-porcas/${id}`).pipe(
       catchError(error => {
         console.error('Erro ao excluir ficha:', error);
