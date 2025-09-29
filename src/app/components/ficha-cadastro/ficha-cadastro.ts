@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,6 +16,9 @@ import { LoteModel } from '../../models/lote.models';
 import { Lote } from '../../services/lote';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Confirmacao } from '../../dialogs/confirmacao/confirmacao';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { AsyncPipe } from '@angular/common';
+import { map, Observable, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-ficha-cadastro',
@@ -24,7 +27,8 @@ import { Confirmacao } from '../../dialogs/confirmacao/confirmacao';
     CommonModule, ReactiveFormsModule, RouterModule,
     MatCardModule, MatButtonModule, MatInputModule, MatFormFieldModule,
     MatProgressSpinnerModule, MatIconModule, MatSelectModule,
-    MatDatepickerModule, MatNativeDateModule, MatDialogModule, Confirmacao
+    MatDatepickerModule, MatNativeDateModule, MatDialogModule, Confirmacao,
+    MatAutocompleteModule
   ],
   templateUrl: './ficha-cadastro.html',
   styleUrl: './ficha-cadastro.scss'
@@ -35,7 +39,8 @@ export class FichaCadastro implements OnInit {
   public errorMessage: string | null = null;
   public tiposPorca: string[] = ['Matriz', 'Leitoa'];
 
-  public lotes: LoteModel[] = [];
+  private todosLotes: LoteModel[] = [];
+  public lotesFiltrados$!: Observable<LoteModel[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -48,7 +53,7 @@ export class FichaCadastro implements OnInit {
       id_porca: ['', [Validators.required, Validators.minLength(3)]],
       data_nascimento: [new Date(), Validators.required],
       tipo_porca: ['', Validators.required],
-      id_lote: ['', Validators.required]
+      id_lote: new FormControl<string | LoteModel>('', Validators.required)
     });
   }
 
@@ -60,14 +65,32 @@ export class FichaCadastro implements OnInit {
     this.isLoading = true;
     this.loteService.getLotes('').subscribe({
       next: (lotesDisponiveis) => {
-        this.lotes = lotesDisponiveis;
+        this.todosLotes = lotesDisponiveis;
         this.isLoading = false;
+        this.lotesFiltrados$ = this.fichaForm.get('id_lote')!.valueChanges.pipe(
+          startWith(''),
+          map(value => {
+            const name = typeof value === 'string' ? value : value?.codigo_lote;
+            return name ? this.filterLotes(String(name)) : this.todosLotes.slice();
+          }),
+        );
       },
       error: (err) => {
         this.errorMessage = err.message;
         this.isLoading = false;
       }
     });
+  }
+
+  private filterLotes(value: string): LoteModel[] {
+    const filterValue = value.toLowerCase();
+    return this.todosLotes.filter(lote => 
+      String(lote.codigo_lote).toLowerCase().includes(filterValue)
+    );
+  }
+
+  public displayLote(lote: LoteModel): string {
+    return lote && lote.codigo_lote ? `${lote.codigo_lote}` : '';
   }
 
   public onSubmit(): void {
@@ -80,8 +103,17 @@ export class FichaCadastro implements OnInit {
     this.errorMessage = null;
 
     const formValues = this.fichaForm.value;
+    const loteSelecionado = formValues.id_lote as LoteModel;
+
+    if (typeof loteSelecionado !== 'object' || !loteSelecionado.id_lote) {
+        this.errorMessage = "Por favor, selecione um lote válido da lista.";
+        this.isLoading = false;
+        return;
+    }
+
     const dadosParaApi = {
       ...formValues,
+      id_lote: loteSelecionado.id_lote,
       data_nascimento: this.formatarData(formValues.data_nascimento)
     };
 
@@ -96,7 +128,7 @@ export class FichaCadastro implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(() => {
-          this.fichaForm.reset();
+          this.fichaForm.reset({ data_nascimento: new Date() });
         });
       },
       error: (err) => {

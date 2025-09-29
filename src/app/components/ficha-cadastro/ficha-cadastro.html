@@ -47,21 +47,19 @@
 
         <mat-form-field appearance="outline">
           <mat-label>Lote</mat-label>
-          <mat-select formControlName="id_lote" required>
-
-            @for (lote of lotes; track lote.id_lote) {
-              <mat-option [value]="lote.id_lote">
-                Lote {{ lote.codigo_lote }}
+          <input type="text" matInput formControlName="id_lote" required [matAutocomplete]="autoLote">
+          <mat-icon matSuffix>search</mat-icon>
+          <mat-autocomplete #autoLote="matAutocomplete" [displayWith]="displayLote">
+            @for(lote of lotesFiltrados$ | async; track lote.id_lote) {
+              <mat-option [value]="lote">
+                {{ lote.codigo_lote }}
               </mat-option>
-            } @empty {
-              <mat-option disabled>Nenhum lote encontrado</mat-option>
             }
-          </mat-select>
-          <mat-icon matSuffix>group_work</mat-icon>
-           
-          @if (fichaForm.get('id_lote')?.hasError('required')) {
-            <mat-error>A seleção do lote é obrigatória.</mat-error>
+          </mat-autocomplete>
+          @if(fichaForm.get('id_lote')?.hasError('required')) {
+            <mat-error>A seleção do lote é obrigatória</mat-error>
           }
+
         </mat-form-field>
       </form>
 

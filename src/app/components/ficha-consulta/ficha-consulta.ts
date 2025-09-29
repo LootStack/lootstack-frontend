@@ -119,6 +119,7 @@ export class FichaConsulta implements OnInit {
                 mensagem: 'Ficha removida com sucesso'
               },
             });
+            this.searchControl.reset();
           },
           error: err => {
             console.error('Erro ao remover ficha:', err);
