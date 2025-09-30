@@ -9,6 +9,7 @@ import { LoteCadastro } from './components/lote-cadastro/lote-cadastro';
 import { FichaCadastro } from './components/ficha-cadastro/ficha-cadastro';
 import { adminGuard } from './guards/admin-guard';
 import { FichaConsultaTotal } from './components/ficha-consulta-total/ficha-consulta-total';
+import { AplicacaoConsulta } from './components/aplicacao-consulta/aplicacao-consulta';
 
 export const routes: Routes = [
     {
@@ -23,6 +24,10 @@ export const routes: Routes = [
             {
                 path: 'aplicacao',
                 component: AplicacaoRegistro
+            },
+            {
+                path: 'aplicacao/consulta',
+                component: AplicacaoConsulta
             },
             {
                 path: 'lotes',

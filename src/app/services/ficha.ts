@@ -73,15 +73,6 @@ export class Ficha {
     );
   }
 
-  public getHistoricoVacinacao(id: string): Observable<AplicacaoModel[]> {
-    return this.http.get<AplicacaoModel[]>(`${this.apiUrl}/aplicacoes-vacinas?id_porca=${id}`).pipe(
-      catchError(error => {
-        console.error('Erro ao obter o histórico de vacinação:', error);
-        return throwError(() => new Error("Não foi possível obter o histórico de vacinação"));
-      })
-    );
-  }
-
 
   public deleteFicha(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/fichas-porcas/${id}`).pipe(

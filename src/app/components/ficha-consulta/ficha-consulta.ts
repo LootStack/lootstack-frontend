@@ -18,6 +18,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
+import { Aplicacao } from '../../services/aplicacao';
 
 @Component({
   selector: 'app-ficha-consulta',
@@ -46,7 +47,7 @@ export class FichaConsulta implements OnInit {
   public isLoading: boolean = false;
   public errorMessage: string | null = null;
 
-  constructor(private fichaService: Ficha, public authService: Auth, private dialog: MatDialog) { }
+  constructor(private fichaService: Ficha, private aplicacaoService: Aplicacao, public authService: Auth, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.searchControl.valueChanges.pipe(
@@ -71,7 +72,7 @@ export class FichaConsulta implements OnInit {
     ).subscribe(ficha => {
       if (ficha) {
         this.fichaSelecionada = ficha;
-        this.fichaService.getHistoricoVacinacao(ficha.id_porca).subscribe({
+        this.aplicacaoService.getHistoricoAplicacoes(ficha.id_porca).subscribe({
           next: (historico) => {
             this.historico = historico;
             this.isLoading = false;
