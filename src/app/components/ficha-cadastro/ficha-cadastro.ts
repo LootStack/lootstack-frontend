@@ -37,7 +37,7 @@ export class FichaCadastro implements OnInit {
   public fichaForm: FormGroup;
   public isLoading: boolean = false;
   public errorMessage: string | null = null;
-  public tiposPorca: string[] = ['Matriz', 'Leitoa'];
+  public tiposPorca: string[] = ['Marrã', 'Lactação', 'Pré-Parto', 'Gestação', 'Reposição', 'Creche'];
 
   private todosLotes: LoteModel[] = [];
   public lotesFiltrados$!: Observable<LoteModel[]>;
