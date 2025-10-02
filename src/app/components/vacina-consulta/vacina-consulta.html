@@ -1,0 +1,48 @@
+<div class="consulta-container">
+  <div class="header-container">
+    <h2>Painel de Gerenciamento de Vacinas</h2>
+
+    <a mat-raised-button color="primary" routerLink="/dashboard/admin/vacinas/nova">
+      <mat-icon>add</mat-icon>
+      Cadastrar Nova Vacina
+    </a>
+  </div>
+
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Buscar por Nome da Vacina</mat-label>
+    <input matInput [formControl]="searchControl" placeholder="Digite para buscar..." />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <div class="table-container mat-elevation-z8">
+    @if(isLoading) {
+    <div class="spinner-container">
+      <mat-spinner></mat-spinner>
+    </div>
+    } @else { @if(error) {
+    <p class="error-message">{{ error }}</p>
+    } @else {
+    <table mat-table [dataSource]="vacinas">
+      <ng-container matColumnDef="nome">
+        <th mat-header-cell *matHeaderCellDef>Nome da Vacina</th>
+        <td mat-cell *matCellDef="let vacina">{{ vacina.nome }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef>Ações</th>
+        <td mat-cell *matCellDef="let vacina">
+          <button mat-icon-button color="warn" aria-label="Remover vacina" (click)="onDeleteVacina(vacina)" title="Remover vacina">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="colunasExibidas"></tr>
+      <tr mat-row *matRowDef="let row; columns: colunasExibidas"></tr>
+    </table>
+
+    @if (vacinas.length === 0 && !isLoading) {
+    <p class="empty-message">Nenhuma vacina encontrada</p>
+    } } }
+  </div>
+</div>

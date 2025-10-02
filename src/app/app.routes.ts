@@ -10,6 +10,10 @@ import { FichaCadastro } from './components/ficha-cadastro/ficha-cadastro';
 import { adminGuard } from './guards/admin-guard';
 import { FichaConsultaTotal } from './components/ficha-consulta-total/ficha-consulta-total';
 import { AplicacaoConsulta } from './components/aplicacao-consulta/aplicacao-consulta';
+import { VacinaConsulta } from './components/vacina-consulta/vacina-consulta';
+import { VacinaCadastro } from './components/vacina-cadastro/vacina-cadastro';
+import { LoteVacinaConsulta } from './components/lote-vacina-consulta/lote-vacina-consulta';
+import { LoteVacinaCadastro } from './components/lote-vacina-cadastro/lote-vacina-cadastro';
 
 export const routes: Routes = [
     {
@@ -45,6 +49,26 @@ export const routes: Routes = [
             {
                 path: 'admin/fichas/nova',
                 component: FichaCadastro,
+                canActivate: [adminGuard]
+            },
+            {
+                path: 'admin/vacinas',
+                component: VacinaConsulta,
+                canActivate: [adminGuard]
+            },
+            {
+                path: 'admin/vacinas/nova',
+                component: VacinaCadastro,
+                canActivate: [adminGuard]
+            },
+            {
+                path: 'admin/lotes-vacinas',
+                component: LoteVacinaConsulta,
+                canActivate: [adminGuard]
+            },
+            {
+                path: 'admin/lotes-vacinas/novo',
+                component: LoteVacinaCadastro,
                 canActivate: [adminGuard]
             },
             {

@@ -11,8 +11,8 @@ export class Aplicacao {
 
   constructor(private http: HttpClient) { }
 
-  public registrarAplicacao(dados: AplicacaoPayload): Observable<AplicacaoModel> {
-    return this.http.post<AplicacaoModel>(this.apiUrl, dados).pipe(
+  public registrarAplicacao(dados: AplicacaoPayload): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(this.apiUrl, dados).pipe(
       catchError(error => {
         console.error('Erro ao registrar aplicação:', error);
         const errorMessage = error?.error?.message || 'Não foi possível registrar a aplicação';
@@ -43,12 +43,12 @@ export class Aplicacao {
     if (isNaN(date.getTime())) {
       return aplicacao;
     }
-  
-    date.setDate(date.getDate());
+    
+    const dataCorrigida = new Date(date.valueOf() + date.getTimezoneOffset() * 60000);
   
     return {
       ...aplicacao,
-      data_aplicacao: date.toISOString().slice(0, 10)
+      data_aplicacao: dataCorrigida.toISOString().slice(0, 10)
     };
   }
 }
