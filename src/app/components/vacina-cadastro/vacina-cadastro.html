@@ -1,1 +1,48 @@
-<p>vacina-cadastro works!</p>
+<div class="cadastro-container">
+  <mat-card>
+    <mat-card-title>
+      Cadastrar Nova Vacina
+      <button mat-flat-button (click)="returnPageConsulta()">
+        Voltar
+        <mat-icon>keyboard_backspace</mat-icon>
+      </button>
+    </mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="vacinaForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Nome da Vacina</mat-label>
+          <input
+            matInput
+            formControlName="nome"
+            placeholder="Ex: FênixVac-PCV2"
+            required
+          />
+          <mat-icon matSuffix>vaccines</mat-icon>
+          @if (vacinaForm.get('nome')?.hasError('required')) {
+            <mat-error>O nome da vacina é obrigatório.</mat-error>
+          }
+          @if (vacinaForm.get('nome')?.hasError('minlength')) {
+            <mat-error>O nome deve ter no mínimo 3 caracteres.</mat-error>
+          }
+        </mat-form-field>
+
+        @if(errorMessage) {
+          <p class="error-message">{{ errorMessage }}</p>
+        }
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="vacinaForm.invalid || isLoading"
+        >
+          @if(isLoading) {
+            <mat-spinner diameter="24"></mat-spinner>
+          } @else {
+            <span>Salvar Vacina</span>
+          }
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

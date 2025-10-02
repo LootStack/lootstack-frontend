@@ -1,0 +1,33 @@
+.cadastro-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+
+    mat-card-title {
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+
+        mat-form-field {
+            width: 100%;
+        }
+
+        button[type="submit"] {
+            margin-top: 10px;
+            min-height: 48px;
+        }
+    }
+}
+
+.error-message {
+    color: red;
+    margin: 10px 0;
+    text-align: center;
+}

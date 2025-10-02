@@ -1,1 +1,58 @@
-<p>lote-vacina-consulta works!</p>
+<div class="consulta-container">
+  <div class="header-container">
+    <h2>Painel de Lotes de Vacinas</h2>
+    <a mat-raised-button color="primary" routerLink="/dashboard/admin/lotes-vacinas/novo">
+      <mat-icon>add</mat-icon>
+      Cadastrar Novo Lote
+    </a>
+  </div>
+
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Buscar por Lote ou Nome da Vacina</mat-label>
+    <input matInput [formControl]="searchControl" placeholder="Digite para buscar..." />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <div class="table-container mat-elevation-z8">
+    @if(isLoading) {
+    <div class="spinner-container">
+      <mat-spinner></mat-spinner>
+    </div>
+    } @else { @if(error) {
+    <p class="error-message">{{ error }}</p>
+    } @else {
+    <table mat-table [dataSource]="lotesVacina">
+
+      <ng-container matColumnDef="codigo_lote_vacina">
+        <th mat-header-cell *matHeaderCellDef>Cód. do Lote</th>
+        <td mat-cell *matCellDef="let lote">{{ lote.codigo_lote_vacina }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="nome_vacina">
+        <th mat-header-cell *matHeaderCellDef>Nome da Vacina</th>
+        <td mat-cell *matCellDef="let lote">{{ lote.nome_vacina }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="data_validade">
+        <th mat-header-cell *matHeaderCellDef>Data de Validade</th>
+        <td mat-cell *matCellDef="let lote">{{ lote.data_validade | date:'dd/MM/yyyy':'UTC' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef>Ações</th>
+        <td mat-cell *matCellDef="let lote">
+          <button mat-icon-button color="warn" aria-label="Remover lote" (click)="onDeleteLote(lote)" title="Remover lote">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="colunasExibidas"></tr>
+      <tr mat-row *matRowDef="let row; columns: colunasExibidas"></tr>
+    </table>
+
+    @if (lotesVacina.length === 0 && !isLoading) {
+    <p class="empty-message">Nenhum lote de vacina encontrado</p>
+    } } }
+  </div>
+</div>

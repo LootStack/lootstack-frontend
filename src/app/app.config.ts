@@ -9,6 +9,8 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { authInterceptor } from './interceptors/auth-interceptor';
 import { registerLocaleData } from '@angular/common';
 
+import { provideNgxMask } from 'ngx-mask';
+
 registerLocaleData(localePt);
 
 export const appConfig: ApplicationConfig = {
@@ -17,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes), provideClientHydration(withEventReplay()),
     provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
+    provideNgxMask({ dropSpecialCharacters: false }),
     { provide: LOCALE_ID, useValue: 'pt-BR' }
   ]
 };

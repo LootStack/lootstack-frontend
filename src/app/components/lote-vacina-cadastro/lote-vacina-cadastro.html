@@ -1,1 +1,67 @@
-<p>lote-vacina-cadastro works!</p>
+<div class="cadastro-container">
+  <mat-card>
+    <mat-card-title>
+      Cadastrar Novo Lote de Vacina
+      <button mat-flat-button (click)="returnPageConsulta()">
+        Voltar
+        <mat-icon>keyboard_backspace</mat-icon>
+      </button>
+    </mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="loteVacinaForm" (ngSubmit)="onSubmit()">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Vacina</mat-label>
+          <input type="text" matInput formControlName="id_vacina" required [matAutocomplete]="autoVacina">
+          <mat-icon matSuffix>search</mat-icon>
+          <mat-autocomplete #autoVacina="matAutocomplete" [displayWith]="displayVacina">
+            @for(vacina of vacinasFiltradas$ | async; track vacina.id_vacina) {
+              <mat-option [value]="vacina">{{ vacina.nome }}</mat-option>
+            }
+          </mat-autocomplete>
+          @if(loteVacinaForm.get('id_vacina')?.hasError('required')) {
+            <mat-error>A seleção da vacina é obrigatória.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Código do Lote</mat-label>
+          <input matInput formControlName="codigo_lote_vacina" placeholder="Ex: A2B4-2025" required>
+          <mat-icon matSuffix>inventory_2</mat-icon>
+           @if(loteVacinaForm.get('codigo_lote_vacina')?.hasError('required')) {
+            <mat-error>O código do lote é obrigatório.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Data de Validade</mat-label>
+          <input matInput formControlName="data_validade" required mask="00/00/0000" placeholder="DD/MM/AAAA">
+           @if(loteVacinaForm.get('data_validade')?.hasError('required')) {
+            <mat-error>A data de validade é obrigatória.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Doses Totais do Frasco (ml)</mat-label>
+          <input matInput type="number" formControlName="doses_total_ml" placeholder="Ex: 50.0" required>
+          <mat-icon matSuffix>science</mat-icon>
+          @if(loteVacinaForm.get('doses_total_ml')?.hasError('required')) {
+            <mat-error>A quantidade de doses é obrigatória.</mat-error>
+          }
+        </mat-form-field>
+
+        @if(errorMessage) {
+          <p class="error-message">{{ errorMessage }}</p>
+        }
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="loteVacinaForm.invalid || isLoading">
+          @if(isLoading) {
+            <mat-spinner diameter="24"></mat-spinner>
+          } @else {
+            <span>Salvar Lote de Vacina</span>
+          }
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
