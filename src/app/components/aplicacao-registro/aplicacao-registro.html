@@ -1,1 +1,104 @@
-<h1>Hello World!</h1>
+<div class="container">
+  <mat-card>
+    <mat-card-header class="card-header-container">
+      <div class="header-text">
+        <mat-card-title>Registrar Nova Aplicação de Vacina</mat-card-title>
+        <mat-card-subtitle>Selecione as porcas, o lote da vacina e os dados da aplicação</mat-card-subtitle>
+      </div>
+      <div class="actions-container">
+        <a mat-stroked-button color="primary" routerLink="/dashboard/aplicacao/consulta">
+          <mat-icon>manage_search</mat-icon>
+          Consultar Histórico
+        </a>
+        @if (authService.isAdmin()) {
+          <a mat-stroked-button routerLink="/dashboard/admin/vacinas">
+            <mat-icon>vaccines</mat-icon>
+            Gerenciar Vacinas
+          </a>
+          <a mat-stroked-button routerLink="/dashboard/admin/lotes-vacinas">
+            <mat-icon>inventory_2</mat-icon>
+            Gerenciar Lotes
+          </a>
+        }
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="aplicacaoForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Porcas (ID do Brinco)</mat-label>
+          <mat-chip-grid #chipGrid aria-label="Seleção de porcas">
+            @for (porca of porcasSelecionadas; track porca.id_porca) {
+              <mat-chip-row (removed)="removerPorca(porca)">
+                {{porca.id_porca}}
+                <button matChipRemove aria-label="'remover ' + porca.id_porca">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+            }
+          </mat-chip-grid>
+          <input 
+            placeholder="Adicionar porca..."
+            #porcaInput
+            [formControl]="porcaCtrl"
+            [matAutocomplete]="autoPorca"
+            [matChipInputFor]="chipGrid"
+          />
+          <mat-autocomplete #autoPorca="matAutocomplete" (optionSelected)="porcaSelecionada($event)">
+            @for (ficha of fichasFiltradas$ | async; track ficha.id_porca) {
+              <mat-option [value]="ficha">{{ficha.id_porca}}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Lote da Vacina</mat-label>
+          <input type="text" matInput [formControl]="loteVacinaCtrl" required [matAutocomplete]="autoLote">
+          <mat-icon matSuffix>search</mat-icon>
+          <mat-autocomplete #autoLote="matAutocomplete" [displayWith]="displayLoteVacina">
+            @for(lote of lotesVacinaFiltrados$ | async; track lote.id_lote_vacina) {
+              <mat-option [value]="lote">{{ lote.codigo_lote_vacina }} - {{ lote.nome_vacina }}</mat-option>
+            }
+          </mat-autocomplete>
+          @if(loteVacinaCtrl.hasError('required')) {
+            <mat-error>A seleção do lote é obrigatória</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Dose Aplicada (ml)</mat-label>
+            <input matInput type="number" formControlName="dose_aplicada_ml" placeholder="Ex: 2.0" required>
+            <mat-icon matSuffix>syringe</mat-icon>
+            @if (aplicacaoForm.get('dose_aplicada_ml')?.hasError('required')) {
+              <mat-error>A dose aplicada é obrigatória</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Data da Aplicação</mat-label>
+            <input matInput formControlName="data_aplicacao" required mask="00/00/0000" placeholder="DD/MM/AAAA">
+             @if (aplicacaoForm.get('data_aplicacao')?.hasError('required')) {
+              <mat-error>A data é obrigatória.</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+      </form>
+      
+      @if (errorMessage) {
+        <p class="error-message">{{ errorMessage }}</p>
+      }
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="aplicacaoForm.invalid || porcasSelecionadas.length === 0 || !loteVacinaCtrl.valid || isLoading">
+        @if(isLoading) {
+          <mat-spinner diameter="24"></mat-spinner>
+        } @else {
+          <span>Registrar Aplicação</span>
+        }
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

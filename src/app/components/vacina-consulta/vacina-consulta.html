@@ -2,10 +2,17 @@
   <div class="header-container">
     <h2>Painel de Gerenciamento de Vacinas</h2>
 
-    <a mat-raised-button color="primary" routerLink="/dashboard/admin/vacinas/nova">
-      <mat-icon>add</mat-icon>
-      Cadastrar Nova Vacina
-    </a>
+    
+    <div class="links">
+      <a mat-raised-button color="primary" routerLink="/dashboard/admin/vacinas/nova">
+        <mat-icon>add</mat-icon>
+        Cadastrar Nova Vacina
+      </a>
+      <a mat-flat-button routerLink="/dashboard/aplicacao">
+        <mat-icon>arrow_back</mat-icon>
+        Voltar
+      </a>
+    </div>
   </div>
 
   <mat-form-field appearance="outline" class="search-field">

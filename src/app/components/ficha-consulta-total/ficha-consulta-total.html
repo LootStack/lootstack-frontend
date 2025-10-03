@@ -20,44 +20,63 @@
 
     <mat-form-field appearance="outline" class="filtro-item">
       <mat-label>Filtrar por Lote</mat-label>
-      <mat-select [formControl]="loteControl">
-        <mat-option [value]="''">Todos os Lotes</mat-option>
-
-        @for (lote of listaLotes; track lote.id_lote) {
-        <mat-option [value]="lote.id_lote">{{ lote.codigo_lote }}</mat-option>
+      <input 
+        type="text" 
+        matInput 
+        [formControl]="loteControl" 
+        [matAutocomplete]="autoLote"
+        placeholder="Digite o código do lote..."
+      />
+      @if (loteControl.value) {
+        <button mat-icon-button matSuffix (click)="loteControl.setValue('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      <mat-autocomplete #autoLote="matAutocomplete" [displayWith]="displayLote">
+        @for (lote of lotesFiltrados$ | async; track lote.id_lote) {
+          <mat-option [value]="lote">
+            {{ lote.codigo_lote }}
+          </mat-option>
         }
-      </mat-select>
+      </mat-autocomplete>
     </mat-form-field>
   </div>
 
   <div class="results-container">
     @if (isLoading) {
-    <div class="spinner-container">
-      <mat-spinner></mat-spinner>
-    </div>
-    } @if (errorMessage && !isLoading) {
-    <p class="error-message">{{ errorMessage }}</p>
-    } @if (!isLoading && dataSource.data.length > 0) {
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <div class="spinner-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    } 
+    @if (errorMessage && !isLoading) {
+      <p class="error-message">{{ errorMessage }}</p>
+    } 
+    
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" [hidden]="isLoading || !!errorMessage">
+      
       <ng-container matColumnDef="id_porca">
         <th mat-header-cell *matHeaderCellDef>ID Brinco</th>
         <td mat-cell *matCellDef="let ficha">{{ ficha.id_porca }}</td>
       </ng-container>
+
       <ng-container matColumnDef="data_nascimento">
         <th mat-header-cell *matHeaderCellDef>Data de Nascimento</th>
         <td mat-cell *matCellDef="let ficha">
           {{ ficha.data_nascimento | date : "dd/MM/yyyy" }}
         </td>
       </ng-container>
+
       <ng-container matColumnDef="codigo_lote">
         <th mat-header-cell *matHeaderCellDef>Código do Lote</th>
         <td mat-cell *matCellDef="let ficha">{{ ficha.codigo_lote }}</td>
       </ng-container>
+
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
-    } @if (!isLoading && dataSource.data.length === 0 && !errorMessage) {
-    <p class="empty-message">Nenhuma ficha encontrada.</p>
+
+    @if (!isLoading && dataSource.data.length === 0 && !errorMessage) {
+      <p class="empty-message">Nenhuma ficha encontrada.</p>
     }
-  </div>
+    </div>
 </div>

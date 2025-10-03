@@ -1,0 +1,45 @@
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    padding: 20px;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+
+    mat-card {
+        mat-card-header {
+            padding: 16px;
+
+            .mat-icon {
+                font-size: 40px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    }
+}
+
+.chart-container {
+    .empty-chart {
+        text-align: center;
+        color: grey;
+        padding: 40px 20px;
+    }
+}

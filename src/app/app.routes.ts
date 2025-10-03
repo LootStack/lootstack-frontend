@@ -14,6 +14,7 @@ import { VacinaConsulta } from './components/vacina-consulta/vacina-consulta';
 import { VacinaCadastro } from './components/vacina-cadastro/vacina-cadastro';
 import { LoteVacinaConsulta } from './components/lote-vacina-consulta/lote-vacina-consulta';
 import { LoteVacinaCadastro } from './components/lote-vacina-cadastro/lote-vacina-cadastro';
+import { VisaoGeral } from './components/visao-geral/visao-geral';
 
 export const routes: Routes = [
     {
@@ -25,6 +26,10 @@ export const routes: Routes = [
         component: Dashboard,
         canActivate: [authGuard],
         children: [
+            {
+                path: 'visao-geral',
+                component: VisaoGeral
+            },
             {
                 path: 'aplicacao',
                 component: AplicacaoRegistro
