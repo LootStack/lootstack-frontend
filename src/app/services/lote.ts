@@ -7,7 +7,7 @@ import { LoteModel } from '../models/lote.models';
   providedIn: 'root'
 })
 export class Lote {
-  private apiUrl: string = 'https://lootstack-api.onrender.com/api/lotes-porcas';
+  private apiUrl: string = 'http://localhost:3000/api/lotes-porcas';
 
   constructor(private http: HttpClient) { }
 

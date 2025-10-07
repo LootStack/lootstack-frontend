@@ -8,7 +8,7 @@ import { AplicacaoModel } from '../models/aplicacao.models';
   providedIn: 'root'
 })
 export class Ficha {
-  private apiUrl = 'https://lootstack-api.onrender.com/api';
+  private apiUrl = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) { }
 

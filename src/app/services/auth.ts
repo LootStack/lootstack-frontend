@@ -10,7 +10,7 @@ import { isPlatformBrowser } from '@angular/common';
   providedIn: 'root'
 })
 export class Auth {
-  private apiUrl:string = 'https://lootstack-api.onrender.com/api';
+  private apiUrl:string = 'http://localhost:3000/api';
   private tokenKey:string = 'lootstack_token';
 
   private platformId = inject(PLATFORM_ID);

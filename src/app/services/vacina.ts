@@ -7,7 +7,7 @@ import { VacinaModel } from '../models/vacina.models';
   providedIn: 'root'
 })
 export class Vacina {
-  private apiUrl = 'https://lootstack-api.onrender.com/api/vacinas';
+  private apiUrl = 'http://localhost:3000/api/vacinas';
 
   constructor(private http: HttpClient){}
 

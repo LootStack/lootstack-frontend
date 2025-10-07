@@ -7,7 +7,7 @@ import { catchError, map, Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class Aplicacao {
-  private apiUrl = 'https://lootstack-api.onrender.com/api/aplicacoes-vacinas';
+  private apiUrl = 'http://localhost:3000/api/aplicacoes-vacinas';
 
   constructor(private http: HttpClient) { }
 

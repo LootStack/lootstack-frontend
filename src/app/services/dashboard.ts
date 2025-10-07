@@ -7,7 +7,7 @@ import { DashboardStatsModel } from '../models/dashboard.models';
   providedIn: 'root'
 })
 export class Dashboard {
-  private apiUrl = 'https://lootstack-api.onrender.com/api/dashboard';
+  private apiUrl = 'http://localhost:3000/api/dashboard';
 
   constructor(private http: HttpClient) { }
 

@@ -7,7 +7,7 @@ import { LoteVacinaModel } from '../models/loteVacina.models';
   providedIn: 'root'
 })
 export class LoteVacina {
-  private apiUrl = 'https://lootstack-api.onrender.com/api/lotes-vacinas';
+  private apiUrl = 'http://localhost:3000/api/lotes-vacinas';
 
   constructor(private http: HttpClient) { }
 
