@@ -42,7 +42,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Doses Totais do Frasco (ml)</mat-label>
+          <mat-label>Doses Totais do Frasco</mat-label>
           <input matInput type="number" formControlName="doses_total_ml" placeholder="Ex: 50.0" required>
           <mat-icon matSuffix>science</mat-icon>
           @if(loteVacinaForm.get('doses_total_ml')?.hasError('required')) {

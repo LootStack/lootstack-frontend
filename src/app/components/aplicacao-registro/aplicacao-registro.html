@@ -67,8 +67,8 @@
 
         <div class="form-row">
           <mat-form-field appearance="outline">
-            <mat-label>Dose Aplicada (ml)</mat-label>
-            <input matInput type="number" formControlName="dose_aplicada_ml" placeholder="Ex: 2.0" required>
+            <mat-label>Dose Aplicada</mat-label>
+            <input matInput type="number" formControlName="dose_aplicada_ml" placeholder="Ex: 2.0" required min="0" step="1">
             <mat-icon matSuffix>syringe</mat-icon>
             @if (aplicacaoForm.get('dose_aplicada_ml')?.hasError('required')) {
               <mat-error>A dose aplicada é obrigatória</mat-error>
