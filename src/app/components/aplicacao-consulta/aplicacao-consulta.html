@@ -15,11 +15,11 @@
 
   <div class="table-container mat-elevation-z8">
     @if(isLoading) {
-    <div class="spinner-container">
-      <mat-spinner></mat-spinner>
-    </div>
+      <div class="spinner-container">
+        <mat-spinner></mat-spinner>
+      </div>
     } @else { @if(error) {
-    <p class="error-message">{{ error }}</p>
+      <p class="error-message">{{ error }}</p>
     } @else {
     <table mat-table [dataSource]="historico">
 
@@ -53,12 +53,25 @@
         <td mat-cell *matCellDef="let item">{{ item.nome_aplicador }}</td>
       </ng-container>
 
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let item">
+          @if(authService.isAdmin()){
+            <button mat-icon-button color="warn" (click)="onDeleteAplicacao(item)" title="Remover registro">
+              <mat-icon>delete</mat-icon>
+            </button>
+          }
+        </td>
+      </ng-container>
+
       <tr mat-header-row *matHeaderRowDef="colunasExibidas"></tr>
       <tr mat-row *matRowDef="let row; columns: colunasExibidas"></tr>
     </table>
 
     @if (historico.length === 0 && !isLoading) {
-    <p class="empty-message">Nenhum registro de aplicação encontrado</p>
-    } } }
+      <p class="empty-message">Nenhum registro de aplicação encontrado</p>
+    } 
+   } 
+  }
   </div>
 </div>

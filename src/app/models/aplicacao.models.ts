@@ -1,4 +1,5 @@
 export interface AplicacaoModel {
+  id_aplicacao: number;
   id_porca: string;
   nome_vacina: string;
   codigo_lote_vacina: string;

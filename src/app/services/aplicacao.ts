@@ -34,18 +34,28 @@ export class Aplicacao {
     );
   }
 
+  public deleteAplicacao(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      catchError(error => {
+        console.error('Erro ao deletar aplicação:', error);
+        const errorMessage = error?.error?.message || 'Não foi possível deletar o registro';
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
   private transformAplicacaoData(aplicacao: AplicacaoModel): AplicacaoModel {
     if (!aplicacao.data_aplicacao) {
       return aplicacao;
     }
-  
+
     const date = new Date(aplicacao.data_aplicacao);
     if (isNaN(date.getTime())) {
       return aplicacao;
     }
-    
+
     const dataCorrigida = new Date(date.valueOf() + date.getTimezoneOffset() * 60000);
-  
+
     return {
       ...aplicacao,
       data_aplicacao: dataCorrigida.toISOString().slice(0, 10)
