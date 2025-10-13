@@ -2,13 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AplicacaoModel, AplicacaoPayload } from '../models/aplicacao.models';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Aplicacao {
-  private apiUrl = `${environment.apiUrl}/aplicacoes-vacinas`;
+  private apiUrl = 'https://lootstack-api.onrender.com/api/aplicacoes-vacinas';
 
   constructor(private http: HttpClient) { }
 

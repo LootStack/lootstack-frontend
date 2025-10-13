@@ -2,13 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { LoteVacinaModel } from '../models/loteVacina.models';
-import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoteVacina {
-  private apiUrl = `${environment.apiUrl}/lotes-vacinas`;
+  private apiUrl = 'https://lootstack-api.onrender.com/api/lotes-vacinas';
 
   constructor(private http: HttpClient) { }
 

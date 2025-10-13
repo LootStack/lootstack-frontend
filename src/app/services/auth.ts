@@ -5,13 +5,12 @@ import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { TokenPayload } from '../models/usuario.models';
 import { isPlatformBrowser } from '@angular/common';
-import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Auth {
-  private apiUrl:string = `${environment.apiUrl}`;
+  private apiUrl:string = 'https://lootstack-api.onrender.com/api';
   private tokenKey:string = 'lootstack_token';
 
   private platformId = inject(PLATFORM_ID);

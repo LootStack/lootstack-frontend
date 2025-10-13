@@ -3,13 +3,12 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { FichaListModel, FichaModel } from '../models/ficha.models';
 import { AplicacaoModel } from '../models/aplicacao.models';
-import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Ficha {
-  private apiUrl = `${environment.apiUrl}`;
+  private apiUrl = 'https://lootstack-api.onrender.com/api';
 
   constructor(private http: HttpClient) { }
 

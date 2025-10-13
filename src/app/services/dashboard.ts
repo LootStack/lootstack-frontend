@@ -2,13 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { DashboardStatsModel } from '../models/dashboard.models';
-import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Dashboard {
-  private apiUrl = `${environment.apiUrl}/dashboard`;
+  private apiUrl = 'https://lootstack-api.onrender.com/api/dashboard';
 
   constructor(private http: HttpClient) { }
 
