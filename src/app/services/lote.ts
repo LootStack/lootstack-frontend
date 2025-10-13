@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { LoteModel } from '../models/lote.models';
+import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Lote {
-  private apiUrl: string = 'http://localhost:3000/api/lotes-porcas';
+  private apiUrl: string = `${environment.apiUrl}/lotes-porcas`;
 
   constructor(private http: HttpClient) { }
 

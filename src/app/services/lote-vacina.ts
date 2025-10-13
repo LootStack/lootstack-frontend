@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { LoteVacinaModel } from '../models/loteVacina.models';
+import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoteVacina {
-  private apiUrl = 'http://localhost:3000/api/lotes-vacinas';
+  private apiUrl = `${environment.apiUrl}/lotes-vacinas`;
 
   constructor(private http: HttpClient) { }
 
