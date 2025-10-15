@@ -2,11 +2,7 @@
   <div class="header-container">
     <h2>Painel de Fichas de Porcas</h2>
     <div class="actions">
-      <a
-        mat-raised-button
-        color="primary"
-        routerLink="/dashboard/fichas/total"
-      >
+      <a mat-raised-button color="primary" routerLink="/dashboard/fichas/total">
         <mat-icon>manage_search</mat-icon>
         Buscar Todas Fichas
       </a>
@@ -47,6 +43,15 @@
           >Detalhes da Ficha: {{ fichaSelecionada.id_porca }}</mat-card-title
         >
         @if(authService.isAdmin()){
+        <a
+          mat-icon-button
+          color="primary"
+          [routerLink]="['/dashboard/admin/fichas/editar']"
+          [queryParams]="{ id: fichaSelecionada.id_porca }"
+          title="Editar ficha"
+        >
+          <mat-icon>edit</mat-icon>
+        </a>
         <button
           mat-icon-button
           color="warn"
