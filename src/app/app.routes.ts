@@ -57,6 +57,11 @@ export const routes: Routes = [
                 canActivate: [adminGuard]
             },
             {
+                path: 'admin/fichas/editar/:id',
+                component: FichaCadastro,
+                canActivate: [adminGuard]
+            },
+            {
                 path: 'admin/vacinas',
                 component: VacinaConsulta,
                 canActivate: [adminGuard]

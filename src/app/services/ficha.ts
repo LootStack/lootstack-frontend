@@ -82,4 +82,13 @@ export class Ficha {
       })
     );
   }
+
+  public updateFicha(id: string, fichaData: any): Observable<FichaModel> {
+    return this.http.put<FichaModel>(`${this.apiUrl}/fichas-porcas/${id}`, fichaData).pipe(
+      catchError(error => {
+        console.error('Erro ao atualizar ficha:', error);
+        return throwError(() => new Error("Não foi possível atualizar a ficha"));
+      })
+    );
+  }
 }

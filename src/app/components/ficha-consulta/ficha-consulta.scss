@@ -34,6 +34,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+
+            .card-actions {
+                display: flex;
+                gap: 8px;
+            }
         }
     }
 

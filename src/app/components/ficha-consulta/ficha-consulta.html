@@ -2,11 +2,7 @@
   <div class="header-container">
     <h2>Painel de Fichas de Porcas</h2>
     <div class="actions">
-      <a
-        mat-raised-button
-        color="primary"
-        routerLink="/dashboard/fichas/total"
-      >
+      <a mat-raised-button color="primary" routerLink="/dashboard/fichas/total">
         <mat-icon>manage_search</mat-icon>
         Buscar Todas Fichas
       </a>
@@ -47,13 +43,28 @@
           >Detalhes da Ficha: {{ fichaSelecionada.id_porca }}</mat-card-title
         >
         @if(authService.isAdmin()){
-        <button
-          mat-icon-button
-          color="warn"
-          (click)="excluirFicha(fichaSelecionada.id_porca)"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
+        <div class="card-actions">
+          <a
+            mat-icon-button
+            color="primary"
+            [routerLink]="[
+              '/dashboard/admin/fichas/editar',
+              fichaSelecionada.id_porca
+            ]"
+            title="Editar ficha"
+          >
+            <mat-icon>edit</mat-icon>
+          </a>
+
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="excluirFicha(fichaSelecionada.id_porca)"
+            title="Excluir ficha"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
         }
       </mat-card-header>
       <mat-card-content>
@@ -118,7 +129,7 @@
     </table>
     } @else {
     <p class="empty-message">
-      Nenhum registro de vacinação encontrado para este animal.
+      Nenhum registro de vacinação encontrado para este animal
     </p>
     } }
   </div>
