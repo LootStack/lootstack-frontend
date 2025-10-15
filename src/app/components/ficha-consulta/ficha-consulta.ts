@@ -7,10 +7,11 @@ import { AplicacaoModel } from '../../models/aplicacao.models';
 import { FichaModel } from '../../models/ficha.models';
 import { Auth } from '../../services/auth';
 import { RouterModule } from '@angular/router';
+import { saveAs } from 'file-saver';
 
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Confirmacao } from '../../dialogs/confirmacao/confirmacao'; 
+import { Confirmacao } from '../../dialogs/confirmacao/confirmacao';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -109,7 +110,7 @@ export class FichaConsulta implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(resultado => {
-      if(resultado) {
+      if (resultado) {
         this.fichaService.deleteFicha(idToDelete).subscribe({
           next: () => {
             this.fichaSelecionada = null;
@@ -133,6 +134,32 @@ export class FichaConsulta implements OnInit {
             });
           }
         });
+      }
+    });
+  }
+
+  public gerarRelatorio(): void {
+    if (!this.fichaSelecionada) {
+      this.dialog.open(Confirmacao, { data: { titulo: 'Erro', mensagem: 'Nenhuma ficha selecionada para gerar o relatório' } });
+      return;
+    }
+
+    const id = this.fichaSelecionada.id_porca;
+    const filename = `Relatorio-Porca-${id}.pdf`;
+
+    const dialogRef = this.dialog.open(Confirmacao, {
+      data: { titulo: 'Gerando Relatório', mensagem: 'Aguarde, o download iniciará em breve...' }
+    });
+
+    this.fichaService.getRelatorioFicha(id).subscribe({
+      next: (pdfBlob) => {
+        saveAs(pdfBlob, filename);
+        dialogRef.close();
+      },
+      error: (err) => {
+        dialogRef.close();
+        this.dialog.open(Confirmacao, { data: { titulo: 'Erro', mensagem: 'Não foi possível gerar o relatório' } });
+        console.error(err);
       }
     });
   }

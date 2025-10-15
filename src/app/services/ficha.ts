@@ -92,4 +92,10 @@ export class Ficha {
       })
     );
   }
+
+  public getRelatorioFicha(id: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/fichas-porcas/${id}/relatorio`, {
+      responseType: 'blob'
+    });
+  }
 }

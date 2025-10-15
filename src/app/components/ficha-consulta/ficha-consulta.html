@@ -44,6 +44,9 @@
         >
         @if(authService.isAdmin()){
           <div class="admin-actions">
+            <button mat-icon-button color="accent" (click)="gerarRelatorio()" title="Gerar Relatório em PDF">
+              <mat-icon>print</mat-icon>
+            </button>
             <a
               mat-icon-button
               color="primary"
