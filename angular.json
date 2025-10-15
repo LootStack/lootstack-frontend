@@ -54,7 +54,10 @@
                 }
               ],
               "outputHashing": "all",
-              "prerender": false,
+              "prerender": {
+                "discoverRoutes": false,
+                "routesFile": "src/prerender.routes.txt"
+              },
               "ssr": {
                 "entry": "src/server.ts"
               }
