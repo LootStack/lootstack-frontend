@@ -1,8 +1,8 @@
 <div class="container">
   <mat-card>
     <mat-card-header>
-      <mat-card-title>{{ isEditMode ? 'Editar Ficha' : 'Cadastro de Nova Ficha' }}</mat-card-title>
-      <mat-card-subtitle>{{ isEditMode ? 'Altere os dados da porca abaixo' : 'Preencha os dados abaixo para registrar uma nova porca' }}</mat-card-subtitle>
+      <mat-card-title>Cadastro de Nova Ficha</mat-card-title>
+      <mat-card-subtitle>Preencha os dados abaixo para registrar uma nova porca</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -12,6 +12,7 @@
           <mat-label>ID da Porca (Brinco)</mat-label>
           <input matInput formControlName="id_porca" placeholder="Ex: PT12345" required>
           <mat-icon matSuffix>tag</mat-icon>
+          
           @if (fichaForm.get('id_porca')?.hasError('required')) {
             <mat-error>O ID é obrigatório.</mat-error>
           }
@@ -22,6 +23,7 @@
           <input matInput [matDatepicker]="picker" formControlName="data_nascimento" required>
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
+          
           @if (fichaForm.get('data_nascimento')?.hasError('required')) {
             <mat-error>A data de nascimento é obrigatória.</mat-error>
           }
@@ -30,12 +32,14 @@
         <mat-form-field appearance="outline">
           <mat-label>Tipo da Porca</mat-label>
           <mat-select formControlName="tipo_porca" required>
+
             @for (tipo of tiposPorca; track tipo) {
               <mat-option [value]="tipo">
                 {{ tipo }}
               </mat-option>
             }
           </mat-select>
+
           @if (fichaForm.get('tipo_porca')?.hasError('required')) {
             <mat-error>O tipo é obrigatório.</mat-error>
           }
@@ -55,6 +59,7 @@
           @if(fichaForm.get('id_lote')?.hasError('required')) {
             <mat-error>A seleção do lote é obrigatória</mat-error>
           }
+
         </mat-form-field>
       </form>
 
@@ -72,15 +77,9 @@
     </mat-card-content>
     
     <mat-card-actions align="end">
-      <button mat-stroked-button color="warn" (click)="returnPage()">Cancelar</button>
+      <button mat-stroked-button color="warn" (click)="returnPage()">Voltar</button>
       <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="fichaForm.invalid || isLoading">
-        
-        @if (isEditMode) {
-          <span>Salvar Alterações</span>
-        } @else {
-          <span>Cadastrar</span>
-        }
-
+        Cadastrar
       </button>
     </mat-card-actions>
   </mat-card>

@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -37,8 +37,6 @@ export class FichaCadastro implements OnInit {
   public fichaForm: FormGroup;
   public isLoading: boolean = false;
   public errorMessage: string | null = null;
-  public isEditMode: boolean = false;
-  private currentId: string | null = null;
   public tiposPorca: string[] = ['Marrã', 'Lactação', 'Pré-Parto', 'Gestação', 'Reposição', 'Creche'];
 
   private todosLotes: LoteModel[] = [];
@@ -48,7 +46,6 @@ export class FichaCadastro implements OnInit {
     private fb: FormBuilder,
     private fichaService: Ficha,
     private router: Router,
-    private route: ActivatedRoute,
     private loteService: Lote,
     private dialog: MatDialog
   ) {
@@ -62,25 +59,6 @@ export class FichaCadastro implements OnInit {
 
   ngOnInit(): void {
     this.carregarLotes();
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.isEditMode = true;
-        this.currentId = id;
-        this.fichaForm.get('id_porca')?.disable();
-
-        this.isLoading = true;
-        this.fichaService.getFichaById(id).subscribe(ficha => {
-          this.fichaForm.patchValue({
-            id_porca: ficha.id_porca,
-            data_nascimento: new Date(ficha.data_nascimento.replace(/-/g, '/')),
-            tipo_porca: ficha.tipo_porca,
-            id_lote: ficha.lote
-          });
-          this.isLoading = false;
-        });
-      }
-    });
   }
 
   private carregarLotes(): void {
@@ -106,7 +84,7 @@ export class FichaCadastro implements OnInit {
 
   private filterLotes(value: string): LoteModel[] {
     const filterValue = value.toLowerCase();
-    return this.todosLotes.filter(lote =>
+    return this.todosLotes.filter(lote => 
       String(lote.codigo_lote).toLowerCase().includes(filterValue)
     );
   }
@@ -124,42 +102,39 @@ export class FichaCadastro implements OnInit {
     this.isLoading = true;
     this.errorMessage = null;
 
-    const formValues = this.fichaForm.getRawValue();
+    const formValues = this.fichaForm.value;
     const loteSelecionado = formValues.id_lote as LoteModel;
 
     if (typeof loteSelecionado !== 'object' || !loteSelecionado.id_lote) {
-      this.errorMessage = "Por favor, selecione um lote válido da lista.";
-      this.isLoading = false;
-      return;
+        this.errorMessage = "Por favor, selecione um lote válido da lista.";
+        this.isLoading = false;
+        return;
     }
 
     const dadosParaApi = {
-      id_porca: formValues.id_porca,
+      ...formValues,
       id_lote: loteSelecionado.id_lote,
-      data_nascimento: this.formatarData(formValues.data_nascimento),
-      tipo_porca: formValues.tipo_porca,
+      data_nascimento: this.formatarData(formValues.data_nascimento)
     };
 
-    const action$ = this.isEditMode
-      ? this.fichaService.updateFicha(this.currentId!, dadosParaApi)
-      : this.fichaService.createFicha(dadosParaApi);
-
-    action$.subscribe({
-      next: (ficha) => {
+    this.fichaService.createFicha(dadosParaApi).subscribe({
+      next: (fichaCriada) => {
         this.isLoading = false;
-        this.dialog.open(Confirmacao, {
+        const dialogRef = this.dialog.open(Confirmacao, {
           data: {
             titulo: 'Sucesso!',
-            mensagem: `Ficha para a porca "${ficha.id_porca}" ${this.isEditMode ? 'atualizada' : 'criada'} com sucesso!`
+            mensagem: `Ficha para a porca "${fichaCriada.id_porca}" criada com sucesso!`
           }
-        }).afterClosed().subscribe(() => {
-          this.router.navigate(['/dashboard/fichas']);
+        });
+
+        dialogRef.afterClosed().subscribe(() => {
+          this.fichaForm.reset({ data_nascimento: new Date() });
         });
       },
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = err.message || 'Ocorreu um erro desconhecido';
-        console.error('Erro ao salvar ficha:', err);
+        console.error('Erro ao criar ficha:', err);
       }
     });
   }
