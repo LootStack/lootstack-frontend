@@ -43,22 +43,24 @@
           >Detalhes da Ficha: {{ fichaSelecionada.id_porca }}</mat-card-title
         >
         @if(authService.isAdmin()){
-        <a
-          mat-icon-button
-          color="primary"
-          [routerLink]="['/dashboard/admin/fichas/editar']"
-          [queryParams]="{ id: fichaSelecionada.id_porca }"
-          title="Editar ficha"
-        >
-          <mat-icon>edit</mat-icon>
-        </a>
-        <button
-          mat-icon-button
-          color="warn"
-          (click)="excluirFicha(fichaSelecionada.id_porca)"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
+          <div class="admin-actions">
+            <a
+              mat-icon-button
+              color="primary"
+              [routerLink]="['/dashboard/admin/fichas/editar']"
+              [queryParams]="{ id: fichaSelecionada.id_porca }"
+              title="Editar ficha"
+            >
+              <mat-icon>edit</mat-icon>
+            </a>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="excluirFicha(fichaSelecionada.id_porca)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         }
       </mat-card-header>
       <mat-card-content>

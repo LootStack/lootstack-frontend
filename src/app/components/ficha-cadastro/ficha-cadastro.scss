@@ -25,6 +25,16 @@ mat-card-content {
 mat-card-actions {
   padding: 16px;
   gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
 }
 
 .loading-container {

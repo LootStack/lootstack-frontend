@@ -65,16 +65,18 @@
     </mat-card-content>
     
     <mat-card-actions align="end">
-      <button mat-stroked-button color="warn" (click)="returnPage()">Cancelar</button>
-      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="fichaForm.invalid || isLoading">
-        
-        @if (isEditMode) {
-          <span>Salvar Alterações</span>
-        } @else {
-          <span>Cadastrar</span>
-        }
-
-      </button>
+      <div class="actions">
+        <button mat-stroked-button color="warn" (click)="returnPage()">Cancelar</button>
+        <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="fichaForm.invalid || isLoading">
+          
+          @if (isEditMode) {
+            <span>Salvar Alterações</span>
+          } @else {
+            <span>Cadastrar</span>
+          }
+  
+        </button>
+      </div>
     </mat-card-actions>
   </mat-card>
 </div>
