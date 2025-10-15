@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "prerender": false,
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
@@ -53,11 +54,7 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all",
-              "prerender": false,
-              "ssr": {
-                "entry": "src/server.ts"
-              }
+              "outputHashing": "all"
             },
             "development": {
               "optimization": false,
