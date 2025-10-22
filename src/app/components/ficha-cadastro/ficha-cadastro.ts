@@ -9,16 +9,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { Ficha } from '../../services/ficha';
 import { LoteModel } from '../../models/lote.models';
 import { Lote } from '../../services/lote';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Confirmacao } from '../../dialogs/confirmacao/confirmacao';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { AsyncPipe } from '@angular/common';
 import { map, Observable, startWith } from 'rxjs';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-ficha-cadastro',
@@ -26,9 +24,8 @@ import { map, Observable, startWith } from 'rxjs';
   imports: [
     CommonModule, ReactiveFormsModule, RouterModule,
     MatCardModule, MatButtonModule, MatInputModule, MatFormFieldModule,
-    MatProgressSpinnerModule, MatIconModule, MatSelectModule,
-    MatDatepickerModule, MatNativeDateModule, MatDialogModule, Confirmacao,
-    MatAutocompleteModule
+    MatProgressSpinnerModule, MatIconModule, MatSelectModule, MatDialogModule, Confirmacao,
+    MatAutocompleteModule, NgxMaskDirective
   ],
   templateUrl: './ficha-cadastro.html',
   styleUrl: './ficha-cadastro.scss'
@@ -55,7 +52,7 @@ export class FichaCadastro implements OnInit {
   ) {
     this.fichaForm = this.fb.group({
       id_porca: ['', [Validators.required, Validators.minLength(3)]],
-      data_nascimento: [new Date(), Validators.required],
+      data_nascimento: [this.formatarDataParaInput(new Date()), Validators.required],
       tipo_porca: ['', Validators.required],
       id_lote: new FormControl<string | LoteModel>('', Validators.required)
     });
@@ -72,9 +69,12 @@ export class FichaCadastro implements OnInit {
 
         this.isLoading = true;
         this.fichaService.getFichaById(id).subscribe(ficha => {
+          const [ano, mes, dia] = ficha.data_nascimento.split('-');
+          const dataFormatadaParaInput = `${dia}/${mes}/${ano}`;
+
           this.fichaForm.patchValue({
             id_porca: ficha.id_porca,
-            data_nascimento: new Date(ficha.data_nascimento.replace(/-/g, '/')),
+            data_nascimento: dataFormatadaParaInput,
             tipo_porca: ficha.tipo_porca,
             id_lote: ficha.lote
           });
@@ -134,10 +134,13 @@ export class FichaCadastro implements OnInit {
       return;
     }
 
+    const [dia, mes, ano] = formValues.data_nascimento.split('/');
+    const dataFormatadaParaApi = `${ano}-${mes}-${dia}`;
+
     const dadosParaApi = {
       id_porca: formValues.id_porca,
       id_lote: loteSelecionado.id_lote,
-      data_nascimento: this.formatarData(formValues.data_nascimento),
+      data_nascimento: dataFormatadaParaApi,
       tipo_porca: formValues.tipo_porca,
     };
 
@@ -169,10 +172,11 @@ export class FichaCadastro implements OnInit {
     this.router.navigate(['/dashboard/fichas']);
   }
 
-  private formatarData(data: Date): string {
-    const ano = data.getFullYear();
-    const mes = (data.getMonth() + 1).toString().padStart(2, '0');
+  private formatarDataParaInput(data: Date): string {
+    if (!data) return '';
     const dia = data.getDate().toString().padStart(2, '0');
-    return `${ano}-${mes}-${dia}`;
+    const mes = (data.getMonth() + 1).toString().padStart(2, '0');
+    const ano = data.getFullYear();
+    return `${dia}/${mes}/${ano}`;
   }
 }

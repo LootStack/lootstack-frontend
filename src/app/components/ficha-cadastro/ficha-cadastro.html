@@ -13,15 +13,13 @@
           <input matInput formControlName="id_porca" placeholder="Ex: PT12345" required>
           <mat-icon matSuffix>tag</mat-icon>
           @if (fichaForm.get('id_porca')?.hasError('required')) {
-            <mat-error>O ID é obrigatório.</mat-error>
+            <mat-error>O ID é obrigatório</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Data de Nascimento</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="data_nascimento" required>
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
+          <input matInput formControlName="data_nascimento" required mask="00/00/0000" placeholder="DD/MM/AAAA">
           @if (fichaForm.get('data_nascimento')?.hasError('required')) {
             <mat-error>A data de nascimento é obrigatória.</mat-error>
           }
