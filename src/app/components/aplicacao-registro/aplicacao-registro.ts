@@ -61,16 +61,15 @@ export class AplicacaoRegistro implements OnInit {
   }
 
   private carregarFichasParaAutocomplete(): void {
-    this.fichaService.getFichas('', '').subscribe(fichas => {
-      this.todasAsFichas = fichas;
-      this.fichasFiltradas$ = this.porcaCtrl.valueChanges.pipe(
-        startWith(''),
-        map(value => {
-          const name = typeof value === 'string' ? value : ''; 
-          return name ? this.filterFichas(name) : this.todasAsFichas.slice();
-        })
-      );
-    });
+    this.fichasFiltradas$ = this.porcaCtrl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(value => {
+        const termo = typeof value === 'string' ? value : '';
+        return this.fichaService.getFichas(termo, '');
+      })
+    );
   }
 
   private setupAutocompleteLotes(): void {
